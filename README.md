@@ -1,5 +1,5 @@
 # mibench-riscv
-This repo is aimed for experimenting RISC-V reltaed research
+This repo is aimed for experimenting RISC-V research
 
 ## New branch rv64-newlibc
 Makefile is modified to target rv64.

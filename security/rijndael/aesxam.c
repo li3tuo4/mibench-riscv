@@ -109,6 +109,9 @@ int encfile(FILE *fin, FILE *fout, aes *ctx, char* fn)
     l = 15;                         /* and store the length of the last */
                                     /* block in the lower 4 bits        */
     inbuf[0] = ((char)flen & 15) | (inbuf[0] & ~15);
+    //kenny change for error: operand of type 'fpos_t' (aka '_G_fpos_t') where arithmetic or pointer type is required
+    //char kenny_flen = (int)flen;
+    //inbuf[0] = (kenny_flen & 15) | (inbuf[0] & ~15);
 
     while(!feof(fin))               /* loop to encrypt the input file   */
     {                               /* input 1st 16 bytes to buf[1..16] */

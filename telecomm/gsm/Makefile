@@ -32,12 +32,16 @@ SASR	= -DSASR
 # CC		= /usr/lang/acc
 # CCFLAGS 	= -c -O
 
-CC		= gcc -ansi -pedantic -static
+#CC		= gcc -ansi -pedantic -static
+#kenny
+CC		= clang -ansi -pedantic -static -march=rv64gc -mabi=lp64 -fsoftboundcets
 # ARM gcc doesn't like the -O1 here...
 #CCFLAGS 	= -c -O1 -DSTUPID_COMPILER -DNeedFunctionPrototypes=1
 CCFLAGS 	= -c -O3 -DSTUPID_COMPILER -DNeedFunctionPrototypes=1
 
-LD 		= $(CC)
+#LD 		= $(CC)
+#kenny
+LD 		= riscv64-unknown-linux-gnu-gcc -static -march=rv64gc -mabi=lp64 -L ../../
 
 # LD		= gcc
 # LDFLAGS 	=
@@ -53,6 +57,7 @@ LD 		= $(CC)
 ######### Library paths needed by $(LD)
 
 # LDLIB	= -lgcc
+ LDLIB	= -lsoftboundcets_rt -lm
 ######### Additional libraries needed by $(LD)
 
 

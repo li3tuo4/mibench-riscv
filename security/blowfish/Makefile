@@ -20,12 +20,15 @@ MAKE=make -f Makefile
 #CC=cc
 #CFLAG= -O
 
-CC=gcc
-CFLAG= -static -O3 -fomit-frame-pointer
+#CC=gcc
+#CFLAG= -static -O3 -fomit-frame-pointer
+CC=clang -fsoftboundcets
+CFLAG= -static -march=rv64gc -mabi=lp64 -fomit-frame-pointer
 
 CFLAGS=$(OPTS) $(CFLAG)
 CPP=$(CC) -E
-AS=as
+#AS=as
+AS=clang
 
 # Assember version of bf_encrypt().
 BF_ENC=bf_enc.o		# normal C version
@@ -47,7 +50,7 @@ LIBSRC=bf_skey.c bf_ecb.c bf_enc.c bf_cbc.c bf_cfb64.c bf_ofb64.c
 GENERAL=Makefile Makefile.ssl Makefile.uni asm bf_locl.org README \
 	COPYRIGHT INSTALL blowfish.doc
 
-TESTING=    bftest bfspeed bf
+TESTING=bftest bfspeed bf
 TESTING_SRC=bftest.c bfspeed.c bf.c
 HEADERS=bf_locl.h blowfish.h bf_pi.h
 
@@ -98,19 +101,30 @@ test:	all
 
 $(BLIB): $(LIBOBJ)
 	/bin/rm -f $(BLIB)
-	ar cr $(BLIB) $(LIBOBJ)
+	#ar cr $(BLIB) $(LIBOBJ)
+	#mod for risc-v archive
+	riscv64-unknown-linux-gnu-ar cr $(BLIB) $(LIBOBJ)
 	-if test -s ranlib; then ssbig-na-sstrix-ranlib $(BLIB); \
 	else if test -s ranlib; then ssbig-na-sstrix-ranlib $(BLIB); \
 	else exit 0; fi; fi
 
 bf: bf.o $(BLIB)
-	$(CC) $(CFLAGS) -o bf bf.o $(BLIB)
+	#kenny link with risc-v toolchain
+	#$(CC) $(CFLAGS) -o bf bf.o $(BLIB)
+	clang -c bf.c -fsoftboundcets
+	riscv64-unknown-linux-gnu-gcc -o bf bf.o $(BLIB) -march=rv64gc -mabi=lp64 -static -L ./ -lblowfish -L ../../ -lsoftboundcets_rt -lm
 
 bftest: bftest.o $(BLIB)
-	$(CC) $(CFLAGS) -o bftest bftest.o $(BLIB)
+	#$(CC) $(CFLAGS) -o bftest bftest.o $(BLIB)
+	#$(CC) $(CFLAGS) -c bftest.c $(BLIB)
+	#kenny have to breakdown into two stage compile & link
+	clang -c bftest.c -fsoftboundcets
+	riscv64-unknown-linux-gnu-gcc -o bftest bftest.o $(BLIB) -march=rv64gc -mabi=lp64 -static -L ./ -lblowfish -L ../../ -lsoftboundcets_rt -lm
 
 bfspeed: bfspeed.o $(BLIB)
-	$(CC) $(CFLAGS) -o bfspeed bfspeed.o $(BLIB)
+	clang -c bfspeed.c -fsoftboundcets
+	riscv64-unknown-linux-gnu-gcc -o bfspeed bfspeed.o $(BLIB) -march=rv64gc -mabi=lp64 -static -L ./ -lblowfish -L ../../ -lsoftboundcets_rt -lm
+	#$(CC) $(CFLAGS) -o bfspeed bfspeed.o $(BLIB)
 
 tags:
 	ctags $(TESTING_SRC) $(LIBBF)

@@ -301,8 +301,11 @@ PDF_COMPRESSION	= 0
 ZLIB		=
 ZLIBPATH	=
 
-CC	= gcc
-LD	= gcc -static
+#CC	= gcc
+#LD	= gcc -static
+#kenny modified for risc-v softboundcets
+CC	= clang -fsoftboundcets
+LD	= riscv64-unknown-linux-gnu-gcc
 
 RCOPY	= cp -r
 
@@ -341,7 +344,7 @@ OBJS	= z01.o z02.o z03.o z04.o z05.o z06.o z07.o z08.o	\
 	  z49.o z50.o z51.o
 
 lout:	$(OBJS)
-	$(LD) -o lout $(OBJS) $(ZLIB) -lm
+	$(LD) -o lout $(OBJS) $(ZLIB) -L ../../../ -lsoftboundcets_rt -lm -march=rv64gc -mabi=lp64 -static
 	chmod a+x lout
 
 $(OBJS): externs.h

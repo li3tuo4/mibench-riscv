@@ -13,6 +13,9 @@ configure:808: checking host system type
 configure:833: checking for gcc
 configure:946: checking whether the C compiler (gcc  ) works
 configure:962: gcc -o conftest    conftest.c  1>&5
+configure:959:1: warning: return type defaults to 'int' [-Wimplicit-int]
+ main(){return(0);}
+ ^~~~
 configure:988: checking whether the C compiler (gcc  ) is a cross-compiler
 configure:993: checking whether we are using GNU C
 configure:1021: checking whether gcc accepts -g

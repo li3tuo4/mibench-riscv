@@ -20,20 +20,25 @@ manext = 1
 mandir = $(prefix)/man/man$(manext)
 
 # The name of your C compiler:
-CC= gcc
+#CC= gcc
+CC= clang
 
 # You may need to adjust these cc options:
-CFLAGS= -O  -I$(srcdir)
+# kenny add softboundcets flag to enforce analysis pass
+CFLAGS= -O -I$(srcdir) -fsoftboundcets
+
 # Generally, we recommend defining any configuration symbols in jconfig.h,
 # NOT via -D switches here.
 # However, any special defines for ansi2knr.c may be included here:
 ANSI2KNRFLAGS= 
 
 # Link-time cc options:
-LDFLAGS= 
+#LDFLAGS= #kenny
+LDFLAGS= -march=rv64gc -mabi=lp64 -static
 
 # To link any special libraries, add the necessary -l commands here.
-LDLIBS= 
+#kenny have to put the link here because the order of the linking library is crucial.
+LDLIBS= -L ../../../ -lsoftboundcets_rt -lm -lrt
 
 # Put here the object file name for the correct system-dependent memory
 # manager file.  For Unix this is usually jmemnobs.o, but you may want
@@ -43,15 +48,18 @@ SYSDEPMEM= jmemnobs.o
 # miscellaneous OS-dependent stuff
 SHELL= /bin/sh
 # linker
-LN= $(CC)
+#LN= $(CC) #kenny
+LN= /home/lycheus/riscv/_install/bin/riscv64-unknown-linux-gnu-gcc
 # file deletion command
 RM= rm -f
 # file rename command
 MV= mv
 # library (.a) file creation command
-AR= ar rc
+#AR= ar rc #kenny
+AR= /home/lycheus/riscv/_install/bin/riscv64-unknown-linux-gnu-ar rc
 # second step in .a creation (use "touch" if not needed)
 AR2= ranlib
+#AR2= 
 # installation program
 INSTALL= /usr/bin/install -c
 INSTALL_PROGRAM= ${INSTALL}
